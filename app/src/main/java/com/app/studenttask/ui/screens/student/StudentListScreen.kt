@@ -22,14 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.app.studenttask.data.model.Student
-import com.app.studenttask.ui.theme.TealBackground
-import com.app.studenttask.ui.theme.ButtonColor
 import com.app.studenttask.ui.viewmodel.StudentViewModel
 
 @Composable
@@ -57,13 +57,13 @@ fun StudentListScreenContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("View Data", color = Color.White) },
+                title = { Text("View Data", color = MaterialTheme.colorScheme.onPrimary) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = TealBackground)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
             )
         }
     ) { paddingValues ->
@@ -71,7 +71,7 @@ fun StudentListScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color(0xFFF0F4F8)) // Light background
+                .background(MaterialTheme.colorScheme.background)
         ) {
             items(studentList) { student ->
                 StudentItem(
@@ -88,13 +88,14 @@ fun StudentItem(
     student: Student,
     onClick: () -> Unit
 ) {
+    val outlineColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
@@ -108,12 +109,18 @@ fun StudentItem(
                 // Avatar
                 if (student.photoUri.isNotEmpty()) {
                     Image(
-                        painter = rememberAsyncImagePainter(student.photoUri),
+                        painter = rememberAsyncImagePainter(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(student.photoUri)
+                                .allowHardware(false)
+                                .crossfade(true)
+                                .build()
+                        ),
                         contentDescription = null,
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape)
-                            .border(2.dp, ButtonColor.copy(alpha=0.2f), CircleShape),
+                            .border(2.dp, outlineColor, CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 } else {
@@ -121,14 +128,15 @@ fun StudentItem(
                          modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape)
-                            .background(Color.White)
-                            .border(2.dp, ButtonColor.copy(alpha=0.2f), CircleShape),
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(2.dp, outlineColor, CircleShape),
                          contentAlignment = Alignment.Center
                      ) {
                          Image(
-                            imageVector = Icons.Default.Person, // Fallback, distinct from design's vector
+                            imageVector = Icons.Default.Person,
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(40.dp),
+                            colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                         )
                      }
                 }
@@ -140,13 +148,14 @@ fun StudentItem(
                     Text(
                         text = student.name, 
                         style = MaterialTheme.typography.titleMedium,
-                        fontSize = 18.sp
+                        fontSize = 18.sp,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "${student.className} Std - ${student.section} / ${student.schoolName}", 
                         style = MaterialTheme.typography.bodyMedium, 
-                        color = Color.Gray.copy(alpha = 0.8f) // Muted text for class/school
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                     )
                 }
             }
@@ -156,13 +165,13 @@ fun StudentItem(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(ButtonColor),
+                    .background(MaterialTheme.colorScheme.primary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     Icons.Default.ArrowForward, 
                     contentDescription = "Details", 
-                    tint = Color.White
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
         }

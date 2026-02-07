@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.app.studenttask.ui.theme.TealBackground
 import com.app.studenttask.ui.viewmodel.StudentViewModel
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -39,7 +38,19 @@ fun MapViewScreen(
     viewModel: StudentViewModel = hiltViewModel()
 ) {
     val studentList by viewModel.studentList.collectAsState()
-    
+    MapViewContent(
+        studentList = studentList,
+        onBack = onBack
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MapViewContent(
+    studentList: List<com.app.studenttask.data.model.Student>,
+    onBack: () -> Unit,
+    isPreview: Boolean = false
+) {
     // Center map logic
     val defaultLocation = LatLng(13.0827, 80.2707)
     val initialPos = if (studentList.isNotEmpty()) {
@@ -52,91 +63,141 @@ fun MapViewScreen(
         position = CameraPosition.fromLatLngZoom(initialPos, 12f)
     }
 
+    var selectedStudentId by remember { mutableStateOf<Long?>(null) }
+    
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Map View", color = Color.White) },
+                title = { Text("Map View", color = MaterialTheme.colorScheme.onPrimary) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = TealBackground)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.primary)
             )
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
-            GoogleMap(
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
-            ) {
-                studentList.forEach { student ->
-                    // Custom Marker showing Image and Name always
-                    MarkerComposable(
-                        keys = arrayOf(student.id, student.photoUri),
-                        state = rememberMarkerState(position = LatLng(student.latitude, student.longitude)),
-                        title = student.name
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+            if (isPreview) {
+                // Map Placeholder for Preview
+                Box(
+                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Google Maps Placeholder", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            } else {
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    onMapClick = { selectedStudentId = null }
+                ) {
+                    studentList.forEach { student ->
+                        val isSelected = selectedStudentId?.toInt() == student.id
+                        val photoUri = student.photoUri.takeIf { it.isNotBlank() && it != "null" }
+
+                        MarkerComposable(
+                            keys = arrayOf(student.id!!, photoUri ?: "", isSelected),
+                            state = rememberMarkerState(position = LatLng(student.latitude, student.longitude)),
+                            title = student.name,
+                            onClick = {
+                                selectedStudentId = if (isSelected) null else student.id.toLong()
+                                true
+                            }
                         ) {
-                            // Rounded Image Marker
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .shadow(4.dp, CircleShape)
-                                    .clip(CircleShape)
-                                    .background(Color.White)
-                                    .border(2.dp, TealBackground, CircleShape)
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                if (student.photoUri.isNotEmpty()) {
-                                    Image(
-                                        painter = rememberAsyncImagePainter(
-                                            model = coil.request.ImageRequest.Builder(LocalContext.current)
-                                                .data(student.photoUri)
-                                                .allowHardware(false)
-                                                .build()
-                                        ),
-                                        contentDescription = null,
+                                if (isSelected) {
+                                    // Expanded State: Row with Image and Name
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier
-                                            .size(54.dp)
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop
+                                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
+                                            .padding(4.dp)
+                                            .padding(end = 12.dp) // Extra padding for name
+                                    ) {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .size(50.dp)
+                                                .clip(CircleShape)
+                                                .background(MaterialTheme.colorScheme.surface)
+                                                .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                                        ) {
+                                            if (!photoUri.isNullOrBlank()) {
+                                                Image(
+                                                    painter = rememberAsyncImagePainter(
+                                                        model = coil.request.ImageRequest.Builder(LocalContext.current)
+                                                            .data(photoUri)
+                                                            .allowHardware(false)
+                                                            .crossfade(true)
+                                                            .build()
+                                                    ),
+                                                    contentDescription = null,
+                                                    modifier = Modifier
+                                                        .size(46.dp)
+                                                        .clip(CircleShape),
+                                                    contentScale = ContentScale.Crop
+                                                )
+                                            } else {
+                                                Icon(Icons.Default.LocationOn, null, tint = MaterialTheme.colorScheme.primary)
+                                            }
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = student.name,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                    // Small Circle Pointer for selected state
+                                    Box(
+                                        modifier = Modifier
+                                            .size(10.dp)
+                                            .background(MaterialTheme.colorScheme.primary.copy(alpha=0.6f), CircleShape)
+                                            .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
                                     )
                                 } else {
-                                     // Fallback
-                                     Icon(
-                                        imageVector = Icons.Default.LocationOn,
-                                        contentDescription = null,
-                                        tint = TealBackground,
-                                        modifier = Modifier.size(32.dp)
+                                    // Default State: Circular Profile Pic
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .shadow(2.dp, CircleShape)
+                                            .clip(CircleShape)
+                                            .background(MaterialTheme.colorScheme.surface)
+                                            .border(1.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                                    ) {
+                                        if (photoUri != null) {
+                                            Image(
+                                                painter = rememberAsyncImagePainter(
+                                                    model = coil.request.ImageRequest.Builder(LocalContext.current)
+                                                        .data(photoUri)
+                                                        .allowHardware(false)
+                                                        .crossfade(true)
+                                                        .build()
+                                                    ),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(46.dp)
+                                                    .clip(CircleShape),
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        } else {
+                                            Icon(Icons.Default.LocationOn, null, tint = MaterialTheme.colorScheme.primary)
+                                        }
+                                    }
+                                    // Triangle Pointer
+                                    Box(
+                                        modifier = Modifier
+                                            .offset(y = (-2).dp)
+                                            .size(width = 12.dp, height = 8.dp)
+                                            .background(MaterialTheme.colorScheme.primary, shape = TriangleShape)
                                     )
                                 }
-                            }
-                            // Triangle/Arrow below circle to look like pin
-                            Box(
-                                modifier = Modifier
-                                    .offset(y = (-4).dp)
-                                    .size(width = 16.dp, height = 12.dp)
-                                    .background(TealBackground, shape = TriangleShape)
-                            )
-                            
-                            Spacer(modifier = Modifier.height(2.dp))
-                            
-                            // Name Label
-                            Card(
-                                shape = RoundedCornerShape(8.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.9f)),
-                                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                            ) {
-                                Text(
-                                    text = student.name,
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                    style = MaterialTheme.typography.labelMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black
-                                )
                             }
                         }
                     }
@@ -152,4 +213,37 @@ val TriangleShape = GenericShape { size, _ ->
     lineTo(size.width, 0f)
     lineTo(size.width / 2f, size.height)
     close()
+}
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+fun MapViewScreenPreview() {
+    MapViewContent(
+        studentList = listOf(
+            com.app.studenttask.data.model.Student(
+                id = 1,
+                name = "John Doe",
+                className = "10",
+                section = "A",
+                schoolName = "Greenwood High",
+                gender = "Male",
+                dob = "01/01/2000",
+                bloodGroup = "O+",
+                fatherName = "James Doe",
+                motherName = "Jane Doe",
+                parentContact = "1234567890",
+                address1 = "123 Main St",
+                address2 = "",
+                city = "Chennai",
+                state = "Tamil Nadu",
+                zipCode = "600001",
+                emergencyContact = "0987654321",
+                latitude = 13.0827,
+                longitude = 80.2707,
+                photoUri = ""
+            )
+        ),
+        onBack = {},
+        isPreview = true
+    )
 }

@@ -34,7 +34,6 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.app.studenttask.R
 import com.app.studenttask.data.model.Student
-import com.app.studenttask.ui.theme.TealBackground
 import com.app.studenttask.ui.viewmodel.StudentViewModel
 
 @Composable
@@ -52,7 +51,7 @@ fun StudentDetailScreen(
     student?.let {
         StudentDetailContent(student = it, onBack = onBack)
     } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator(color = TealBackground)
+        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -63,7 +62,7 @@ fun StudentDetailContent(
     onBack: () -> Unit
 ) {
     Scaffold(
-        containerColor = TealBackground // Top background
+        containerColor = MaterialTheme.colorScheme.background // Base background
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -76,7 +75,8 @@ fun StudentDetailContent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .padding(bottom = 16.dp)
             ) {
                 IconButton(
                     onClick = onBack,
@@ -85,14 +85,14 @@ fun StudentDetailContent(
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
 
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp),
+                        .padding(top = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // Profile Image
@@ -101,13 +101,15 @@ fun StudentDetailContent(
                             painter = rememberAsyncImagePainter(
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(student.photoUri)
+                                    .allowHardware(false)
+                                    .crossfade(true)
                                     .build()
                             ),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(CircleShape)
-                                .border(4.dp, Color.White, CircleShape),
+                                .border(4.dp, MaterialTheme.colorScheme.onPrimary, CircleShape),
                             contentScale = ContentScale.Crop
                         )
                     } else {
@@ -115,11 +117,11 @@ fun StudentDetailContent(
                             modifier = Modifier
                                 .size(120.dp)
                                 .clip(CircleShape)
-                                .background(Color.White)
-                                .border(4.dp, Color.White, CircleShape),
+                                .background(MaterialTheme.colorScheme.surface)
+                                .border(4.dp, MaterialTheme.colorScheme.onPrimary, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(Icons.Default.Person, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(60.dp))
+                            Icon(Icons.Default.Person, contentDescription = null, tint = MaterialTheme.colorScheme.onSurface, modifier = Modifier.size(60.dp))
                         }
                     }
 
@@ -129,7 +131,7 @@ fun StudentDetailContent(
                         text = student.name,
                         style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.onPrimary
                     )
                     
                     Spacer(modifier = Modifier.height(4.dp))
@@ -137,12 +139,12 @@ fun StudentDetailContent(
                     Text(
                         text = "${student.className} Standard \"${student.section}\" Section",
                         style = MaterialTheme.typography.bodyLarge,
-                        color = Color.White.copy(alpha = 0.8f)
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                     )
                     Text(
                         text = student.schoolName,
                         style = MaterialTheme.typography.bodyMedium,
-                        color = Color.White.copy(alpha = 0.8f)
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f)
                     )
                 }
             }
@@ -164,15 +166,11 @@ fun StudentDetailContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             // -- White Container for Details --
-            // We use a Surface/Card with top rounded corners to mimic the bottom sheet look if desired, 
-            // or just standard cards as per the flat design screenshot which looks like cards on white bg.
-            // But wait, the screenshot has a white rounded container holding the rest.
-            
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        Color.White, 
+                        MaterialTheme.colorScheme.background, 
                         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
                     )
                     .padding(16.dp)
@@ -191,7 +189,7 @@ fun StudentDetailContent(
                 DetailSectionCard(title = "Residential Details") {
                     DetailRow("Address 1", student.address1)
                     DetailRow("Address 2", student.address2.ifEmpty { "-" })
-                    DetailRow("City", student.city, isLink = true) // Color match design
+                    DetailRow("City", student.city, isLink = true)
                     DetailRow("State", student.state, isLink = true)
                     DetailRow("Zip", student.zipCode, isLink = true)
                 }
@@ -202,37 +200,49 @@ fun StudentDetailContent(
                 Text(
                     text = "Location",
                     style = MaterialTheme.typography.titleMedium,
-                    color = TealBackground,
+                    color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 Box(
-                     modifier = Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
+                        .height(180.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
-                        .background(Color.LightGray) // Placeholder color
+                        .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha=0.5f), RoundedCornerShape(8.dp))
                 ) {
-                     // In a real app, use LiteMode GoogleMap here.
-                     // For now, use the map resource or placeholder icon
-                     Image(
-                        painter = painterResource(id = R.drawable.map_view), // Use existing drawable
-                        contentDescription = "Map Preview",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                     )
+                    val studentLocation = com.google.android.gms.maps.model.LatLng(student.latitude, student.longitude)
+                    val cameraPositionState = com.google.maps.android.compose.rememberCameraPositionState {
+                        position = com.google.android.gms.maps.model.CameraPosition.fromLatLngZoom(studentLocation, 15f)
+                    }
+                    
+                    com.google.maps.android.compose.GoogleMap(
+                        modifier = Modifier.fillMaxSize(),
+                        cameraPositionState = cameraPositionState,
+                        uiSettings = com.google.maps.android.compose.MapUiSettings(
+                            zoomControlsEnabled = false,
+                            scrollGesturesEnabled = false,
+                            zoomGesturesEnabled = false,
+                            tiltGesturesEnabled = false,
+                            rotationGesturesEnabled = false
+                        )
+                    ) {
+                        com.google.maps.android.compose.Marker(
+                            state = com.google.maps.android.compose.MarkerState(position = studentLocation),
+                            title = student.name
+                        )
+                    }
                      
-                     // Expand Icon overlay
-                     Box(
-                         modifier = Modifier
+                    // Expand Icon overlay
+                    Box(
+                        modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(8.dp)
-                            .background(Color.White, RoundedCornerShape(4.dp))
+                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f), RoundedCornerShape(4.dp))
                             .padding(4.dp)
-                     ) {
-                         Icon(Icons.Default.Expand, contentDescription = "Expand", tint = TealBackground, modifier = Modifier.size(16.dp))
-                     }
+                    ) {
+                        Icon(Icons.Default.Expand, contentDescription = "Expand", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
+                    }
                 }
                 
                 Spacer(modifier = Modifier.height(40.dp)) // Bottom padding
@@ -244,9 +254,9 @@ fun StudentDetailContent(
 @Composable
 fun InfoCard(label: String, value: String, modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier.height(70.dp), // Fixed height from look
+        modifier = modifier.height(70.dp),
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White) 
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) 
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -256,14 +266,14 @@ fun InfoCard(label: String, value: String, modifier: Modifier = Modifier) {
             Text(
                 text = label, 
                 style = MaterialTheme.typography.bodyMedium, 
-                color = TealBackground,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = value, 
                 style = MaterialTheme.typography.bodySmall, 
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center
             )
         }
@@ -276,8 +286,8 @@ fun DetailSectionCard(title: String, content: @Composable ColumnScope.() -> Unit
         Card(
             modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
             shape = RoundedCornerShape(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFADD8E6)) // Light Blue Border
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha=0.3f))
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -288,10 +298,10 @@ fun DetailSectionCard(title: String, content: @Composable ColumnScope.() -> Unit
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color(0xFF7CA7B8), // Muted Blue/Teal
+            color = MaterialTheme.colorScheme.primary.copy(alpha=0.7f),
             modifier = Modifier
                 .padding(start = 12.dp)
-                .background(Color.White)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 4.dp)
         )
     }
@@ -308,16 +318,45 @@ fun DetailRow(label: String, value: String, isLink: Boolean = false) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.LightGray,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha=0.5f),
             modifier = Modifier.weight(1f)
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            color = if (isLink) TealBackground else Color(0xFF546E7A), // Teal for links, GreyBlue for text
+            color = if (isLink) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
             fontWeight = if (isLink) FontWeight.Medium else FontWeight.Normal,
             modifier = Modifier.weight(1f),
             textAlign = TextAlign.End
         )
     }
+}
+@Preview(showBackground = true)
+@Composable
+fun StudentDetailPreview() {
+    StudentDetailContent(
+        student = Student(
+            id = 1,
+            name = "John Doe",
+            className = "10",
+            section = "A",
+            schoolName = "Greenwood High",
+            gender = "Male",
+            dob = "01/01/2000",
+            bloodGroup = "O+",
+            fatherName = "James Doe",
+            motherName = "Jane Doe",
+            parentContact = "1234567890",
+            address1 = "123 Main St",
+            address2 = "",
+            city = "Chennai",
+            state = "Tamil Nadu",
+            zipCode = "600001",
+            emergencyContact = "0987654321",
+            latitude = 13.0827,
+            longitude = 80.2707,
+            photoUri = ""
+        ),
+        onBack = {}
+    )
 }

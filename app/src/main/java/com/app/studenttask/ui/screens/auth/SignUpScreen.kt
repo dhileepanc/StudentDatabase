@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -29,9 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.studenttask.R
 import com.app.studenttask.data.model.User
-import com.app.studenttask.ui.theme.TealBackground
-import com.app.studenttask.ui.theme.ButtonColor
-import com.app.studenttask.ui.theme.LightBlueOverlay
 import com.app.studenttask.ui.viewmodel.AuthUiState
 import com.app.studenttask.ui.viewmodel.AuthViewModel
 
@@ -80,20 +78,21 @@ fun SignUpScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(TealBackground)
+            .background(MaterialTheme.colorScheme.background)
+            .navigationBarsPadding()
     ) {
         // Top Section
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.8f) 
-                .background(TealBackground),
+                .weight(0.8f), // Reduced weight to give more space to form
             contentAlignment = Alignment.BottomCenter
         ) {
              Image(
                 painter = painterResource(id = R.drawable.signup_logo),
                 contentDescription = "SignUp Logo",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop, // Changed to Crop for better consistency
+                alignment = Alignment.TopCenter,
                 modifier = Modifier
                     .fillMaxSize()
             )
@@ -103,9 +102,11 @@ fun SignUpScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(2.2f)
-                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .background(LightBlueOverlay)
+                .offset(y = (-30).dp) // Reduced negative offset
+                .padding(horizontal = 12.dp)
+                .shadow(elevation = 10.dp, shape = RoundedCornerShape(5.dp))
+                .clip(RoundedCornerShape(5.dp))
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -113,63 +114,89 @@ fun SignUpScreenContent(
                 text = "SIGN UP",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = ButtonColor,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.align(Alignment.Start).padding(bottom = 24.dp)
             )
 
-            OutlinedTextField(
+            TextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("User Name") },
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ButtonColor,
-                    unfocusedBorderColor = Color.Gray
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
             
-            OutlinedTextField(
+            TextField(
                 value = phone,
                 onValueChange = { phone = it },
                 label = { Text("Phone no") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ButtonColor,
-                    unfocusedBorderColor = Color.Gray
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.outline
                 )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
+            TextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ButtonColor,
-                    unfocusedBorderColor = Color.Gray
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.outline
                 )
             )
             
             Spacer(modifier = Modifier.height(16.dp))
              
-             OutlinedTextField(
+             TextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
                 label = { Text("Confirm Password") },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ButtonColor,
-                    unfocusedBorderColor = Color.Gray
-                )
+                 colors = TextFieldDefaults.colors(
+                     focusedContainerColor = Color.Transparent,
+                     unfocusedContainerColor = Color.Transparent,
+                     disabledContainerColor = Color.Transparent,
+                     cursorColor = MaterialTheme.colorScheme.primary,
+                     focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                     unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                     focusedLabelColor = MaterialTheme.colorScheme.primary,
+                     unfocusedLabelColor = MaterialTheme.colorScheme.outline
+                 )
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -186,29 +213,36 @@ fun SignUpScreenContent(
                     .fillMaxWidth()
                     .height(50.dp),
                 shape = RoundedCornerShape(25.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 if (registerState is AuthUiState.Loading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("SIGN UP", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("SIGN UP", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
                 }
             }
             
             Spacer(modifier = Modifier.height(24.dp))
-            
-             Row {
-                Text("Already have an account? ", color = Color.Gray)
-                Text(
-                    "SignIn", 
-                    color = ButtonColor, 
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onNavigateToLogin() }
-                )
-            }
+        }
+
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text("Already have an account? ", color = MaterialTheme.colorScheme.outline) // Changed icon color reference to Gray
+            Text(
+                "SignIn", 
+                color = MaterialTheme.colorScheme.primary, 
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { onNavigateToLogin() }
+            )
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+
         }
     }
-}
+
 
 @Preview(showBackground = true)
 @Composable

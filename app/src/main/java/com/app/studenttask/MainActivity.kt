@@ -23,10 +23,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StudentTaskTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavigation()
-                    }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AppNavigation()
                 }
             }
         }

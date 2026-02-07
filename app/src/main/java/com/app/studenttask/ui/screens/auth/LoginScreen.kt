@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -28,9 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.app.studenttask.R
-import com.app.studenttask.ui.theme.TealBackground
-import com.app.studenttask.ui.theme.ButtonColor
-import com.app.studenttask.ui.theme.LightBlueOverlay
 import com.app.studenttask.ui.viewmodel.AuthUiState
 import com.app.studenttask.ui.viewmodel.AuthViewModel
 
@@ -76,23 +74,23 @@ fun LoginScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(TealBackground)
+            .background(MaterialTheme.colorScheme.background)
+            .navigationBarsPadding()
     ) {
         // Top Section with Image
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-                .background(TealBackground),
+                .weight(1f),
             contentAlignment = Alignment.BottomCenter
         ) {
             Image(
                 painter = painterResource(id = R.drawable.signin_logo),
                 contentDescription = "Login Logo",
-                contentScale = ContentScale.Fit,
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.TopCenter,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 0.dp) 
             )
         }
 
@@ -100,34 +98,46 @@ fun LoginScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.5f)
-                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .background(LightBlueOverlay)
-                .padding(24.dp),
+                .offset(y = (-40).dp)
+                .padding(horizontal = 12.dp)
+                .shadow(elevation = 10.dp, shape = RoundedCornerShape(5.dp))
+                .clip(RoundedCornerShape(5.dp))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "SIGN IN",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                color = ButtonColor,
-                modifier = Modifier.align(Alignment.Start).padding(bottom = 24.dp)
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .align(Alignment.Start)
+                    .padding(bottom = 24.dp)
             )
 
-            OutlinedTextField(
+            TextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("User Name") },
                 modifier = Modifier.fillMaxWidth(),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ButtonColor,
-                    unfocusedBorderColor = Color.Gray
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
+            TextField(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Password") },
@@ -141,12 +151,18 @@ fun LoginScreenContent(
                         Icons.Filled.VisibilityOff
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = null)
+                        Icon(imageVector = image, contentDescription = null, tint = MaterialTheme.colorScheme.outline)
                     }
                 },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = ButtonColor,
-                    unfocusedBorderColor = Color.Gray
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    cursorColor = MaterialTheme.colorScheme.primary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.outline
                 )
             )
             
@@ -154,9 +170,11 @@ fun LoginScreenContent(
             
             Text(
                 text = "Forget Password ?",
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.outline,
                 fontSize = 12.sp,
-                modifier = Modifier.align(Alignment.End).clickable { /* TODO */ }
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .clickable { /* TODO */ }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -166,28 +184,30 @@ fun LoginScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                shape = RoundedCornerShape(25.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
+                shape = RoundedCornerShape(50.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                  if (loginState is AuthUiState.Loading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(24.dp))
                 } else {
-                    Text("LOG IN", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    Text("LOG IN", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimary)
                 }
             }
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            Row {
-                Text("Don't have an account? ", color = Color.Gray)
-                Text(
-                    "SignUp", 
-                    color = ButtonColor, 
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onNavigateToSignUp() }
-                )
-            }
         }
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text("Don't have an account? ", color = MaterialTheme.colorScheme.outline)
+            Text(
+                "SignUp", 
+                color = MaterialTheme.colorScheme.primary, 
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable { onNavigateToSignUp() }
+            )
+        }
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

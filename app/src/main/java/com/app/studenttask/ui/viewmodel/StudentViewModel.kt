@@ -1,5 +1,6 @@
 package com.app.studenttask.ui.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.studenttask.data.model.Student
@@ -25,6 +26,27 @@ class StudentViewModel @Inject constructor(
     private val _addStudentState = MutableStateFlow<StudentUiState>(StudentUiState.Idle)
     val addStudentState: StateFlow<StudentUiState> = _addStudentState.asStateFlow()
 
+    // Form State
+    var name = MutableStateFlow("")
+    var className = MutableStateFlow("")
+    var section = MutableStateFlow("")
+    var schoolName = MutableStateFlow("")
+    var gender = MutableStateFlow("Male")
+    var dob = MutableStateFlow("")
+    var bloodGroup = MutableStateFlow("")
+    var fatherName = MutableStateFlow("")
+    var motherName = MutableStateFlow("")
+    var parentContact = MutableStateFlow("")
+    var address1 = MutableStateFlow("")
+    var address2 = MutableStateFlow("")
+    var city = MutableStateFlow("")
+    var districtState = MutableStateFlow("")
+    var zipCode = MutableStateFlow("")
+    var emergencyContact = MutableStateFlow("")
+    var latitude = MutableStateFlow<Double?>(null)
+    var longitude = MutableStateFlow<Double?>(null)
+    var photoUri = MutableStateFlow<Uri?>(null)
+
     init {
         loadStudents()
     }
@@ -41,18 +63,42 @@ class StudentViewModel @Inject constructor(
         }
     }
 
-    fun addStudent(student: Student) {
+    fun addStudent() {
         viewModelScope.launch {
             _addStudentState.value = StudentUiState.Loading
             try {
-                if (student.name.isBlank() || student.className.isBlank() || student.section.isBlank()) {
-                     _addStudentState.value = StudentUiState.Error("Name, Class and Section are required")
-                     return@launch
+                // Validation: Only name, photo, and location are mandatory
+                if (name.value.isBlank() || photoUri.value == null || latitude.value == null || longitude.value == null) {
+                    _addStudentState.value = StudentUiState.Error("Name, Photo and Location are mandatory")
+                    return@launch
                 }
                 
+                val student = Student(
+                    name = name.value,
+                    className = className.value,
+                    section = section.value,
+                    schoolName = schoolName.value,
+                    gender = gender.value,
+                    dob = dob.value,
+                    bloodGroup = bloodGroup.value,
+                    fatherName = fatherName.value,
+                    motherName = motherName.value,
+                    parentContact = parentContact.value,
+                    address1 = address1.value,
+                    address2 = address2.value,
+                    city = city.value,
+                    state = districtState.value,
+                    zipCode = zipCode.value,
+                    emergencyContact = emergencyContact.value,
+                    latitude = latitude.value ?: 0.0,
+                    longitude = longitude.value ?: 0.0,
+                    photoUri = photoUri.value.toString()
+                )
+
                 val result = repository.addStudent(student)
                 if (result) {
                     _addStudentState.value = StudentUiState.Success
+                    clearForm()
                     loadStudents() // Refresh list
                 } else {
                     _addStudentState.value = StudentUiState.Error("Failed to add student")
@@ -61,6 +107,28 @@ class StudentViewModel @Inject constructor(
                 _addStudentState.value = StudentUiState.Error(e.message ?: "Unknown error")
             }
         }
+    }
+
+    fun clearForm() {
+        name.value = ""
+        className.value = ""
+        section.value = ""
+        schoolName.value = ""
+        gender.value = "Male"
+        dob.value = ""
+        bloodGroup.value = ""
+        fatherName.value = ""
+        motherName.value = ""
+        parentContact.value = ""
+        address1.value = ""
+        address2.value = ""
+        city.value = ""
+        districtState.value = ""
+        zipCode.value = ""
+        emergencyContact.value = ""
+        latitude.value = null
+        longitude.value = null
+        photoUri.value = null
     }
 
     fun deleteStudent(id: Int) {

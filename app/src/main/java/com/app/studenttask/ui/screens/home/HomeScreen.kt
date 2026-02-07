@@ -1,27 +1,26 @@
 package com.app.studenttask.ui.screens.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.studenttask.ui.theme.TealBackground
-import com.app.studenttask.ui.theme.LightBlueOverlay
-import com.app.studenttask.ui.theme.TealDark
+import com.app.studenttask.R
 
 @Composable
 fun HomeScreen(
@@ -30,77 +29,113 @@ fun HomeScreen(
     onMapClick: () -> Unit,
     onLogout: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(TealBackground)
-    ) {
-        // Top Section
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.4f)
-                .padding(24.dp)
-        ) {
-             Column(modifier = Modifier.align(Alignment.CenterStart)) {
-                 IconButton(onClick = onLogout) {
-                     Icon(Icons.Default.ExitToApp, contentDescription = "Logout", tint = Color.White)
-                 }
-                 Spacer(modifier = Modifier.height(16.dp))
-                 Text(
-                     text = "Welcome to",
-                     color = Color.White.copy(alpha = 0.7f),
-                     fontSize = 16.sp
-                 )
-                 Text(
-                     text = "Student Database App",
-                     color = Color.White,
-                     fontSize = 24.sp,
-                     fontWeight = FontWeight.Bold
-                 )
-             }
-             
-             // Circle decoration
-             Box(
-                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .size(60.dp)
-                    .background(Color.White.copy(alpha = 0.8f), shape = androidx.compose.foundation.shape.CircleShape)
-             )
-        }
-
-        // Bottom Section - Dashboard Grid
+    Box(modifier = Modifier.fillMaxSize()) {
+        // 1. Full Screen Background Layout (Top Curve + Bottom Logo)
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.6f)
-                .background(Color.Transparent), // Maintain transparency to see graphical elements if added
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
         ) {
+            // Top Curve Background
+            Image(
+                painter = painterResource(id = R.drawable.dashboard_top),
+                contentDescription = "Dashboard Background",
+                contentScale = ContentScale.FillWidth,
+                alignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+            )
+            
+            // Center Logo
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.dash_logo),
+                    contentDescription = "Dashboard Logo",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp)
+                )
+            }
+        }
+
+        // 2. Content Overlay
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+        ) {
+            // Top Header Content (Welcome Text + Menu)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 16.dp)
+            ) {
+                 Column(modifier = Modifier.align(Alignment.CenterStart)) {
+                     IconButton(onClick = onLogout) {
+                         Icon(
+                             Icons.Default.GridView, 
+                             contentDescription = "Menu", 
+                             tint = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else Color.White
+                         )
+                     }
+                     Spacer(modifier = Modifier.height(24.dp))
+                     Text(
+                         text = "Welcome to",
+                         color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f) else Color.White.copy(alpha = 0.8f),
+                         fontSize = 18.sp
+                     )
+                     Text(
+                         text = "Student Database App",
+                         color = if (isSystemInDarkTheme()) MaterialTheme.colorScheme.onPrimary else Color.White,
+                         fontSize = 28.sp,
+                         fontWeight = FontWeight.Bold
+                     )
+                 }
+                 
+                 // Circle decoration
+                 Box(
+                     modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .size(60.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            shape = androidx.compose.foundation.shape.CircleShape
+                        )
+                 )
+            }
+            
+            Spacer(modifier = Modifier.height(60.dp)) // Spacing to push grid down to overlap/sit below curve
+
+            // Dashboard Grid
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 DashboardCard(
                     title = "Add\nStudent", 
-                    icon = Icons.Default.Add, 
+                    iconRes = R.drawable.add_student,
                     onClick = onAddStudentClick
                 )
                 DashboardCard(
                     title = "View\nStudent", 
-                    icon = Icons.Default.List, 
+                    iconRes = R.drawable.view_student, 
                     onClick = onViewStudentClick
                 )
                 DashboardCard(
                     title = "Map\nView", 
-                    icon = Icons.Default.Map, 
+                    iconRes = R.drawable.map_view, 
                     onClick = onMapClick
                 )
             }
-            
-            // Image Placeholder at bottom
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -108,7 +143,7 @@ fun HomeScreen(
 @Composable
 fun DashboardCard(
     title: String,
-    icon: ImageVector,
+    iconRes: Int,
     onClick: () -> Unit
 ) {
     Card(
@@ -117,8 +152,8 @@ fun DashboardCard(
             .height(140.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = LightBlueOverlay),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -127,16 +162,19 @@ fun DashboardCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(50.dp)
-                    .background(TealDark, shape = androidx.compose.foundation.shape.CircleShape),
+                    .size(60.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = icon, contentDescription = null, tint = Color.White)
+                Image(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize()
+                )
             }
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = title,
-                color = TealDark,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
