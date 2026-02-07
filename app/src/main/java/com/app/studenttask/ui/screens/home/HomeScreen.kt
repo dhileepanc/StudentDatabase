@@ -30,13 +30,12 @@ fun HomeScreen(
     onLogout: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        // 1. Full Screen Background Layout (Top Curve + Bottom Logo)
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Top Curve Background
+            // Top sectionn
             Image(
                 painter = painterResource(id = R.drawable.dashboard_top),
                 contentDescription = "Dashboard Background",
@@ -46,7 +45,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .height(300.dp)
             )
-            
+
             // Center Logo
             Box(
                 modifier = Modifier
@@ -71,7 +70,7 @@ fun HomeScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
-            // Top Header Content (Welcome Text + Menu)
+            // Top Header Content
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,8 +97,7 @@ fun HomeScreen(
                          fontWeight = FontWeight.Bold
                      )
                  }
-                 
-                 // Circle decoration
+
                  Box(
                      modifier = Modifier
                         .align(Alignment.TopEnd)
@@ -113,7 +111,6 @@ fun HomeScreen(
             
             Spacer(modifier = Modifier.height(60.dp)) // Spacing to push grid down to overlap/sit below curve
 
-            // Dashboard Grid
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

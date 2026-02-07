@@ -80,7 +80,6 @@ fun MapViewContent(
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues).fillMaxSize()) {
             if (isPreview) {
-                // Map Placeholder for Preview
                 Box(
                     modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
@@ -110,13 +109,12 @@ fun MapViewContent(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 if (isSelected) {
-                                    // Expanded State: Row with Image and Name
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier
                                             .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(24.dp))
                                             .padding(4.dp)
-                                            .padding(end = 12.dp) // Extra padding for name
+                                            .padding(end = 12.dp)
                                     ) {
                                         Box(
                                             contentAlignment = Alignment.Center,
@@ -153,7 +151,7 @@ fun MapViewContent(
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
-                                    // Small Circle Pointer for selected state
+
                                     Box(
                                         modifier = Modifier
                                             .size(10.dp)
@@ -161,7 +159,7 @@ fun MapViewContent(
                                             .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
                                     )
                                 } else {
-                                    // Default State: Circular Profile Pic
+
                                     Box(
                                         contentAlignment = Alignment.Center,
                                         modifier = Modifier
@@ -190,7 +188,7 @@ fun MapViewContent(
                                             Icon(Icons.Default.LocationOn, null, tint = MaterialTheme.colorScheme.primary)
                                         }
                                     }
-                                    // Triangle Pointer
+
                                     Box(
                                         modifier = Modifier
                                             .offset(y = (-2).dp)
@@ -207,7 +205,7 @@ fun MapViewContent(
     }
 }
 
-// Custom Triangle Shape for the pin bottom
+
 val TriangleShape = GenericShape { size, _ ->
     moveTo(0f, 0f)
     lineTo(size.width, 0f)

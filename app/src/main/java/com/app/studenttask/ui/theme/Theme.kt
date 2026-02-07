@@ -44,7 +44,7 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun StudentTaskTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Disable dynamicColor by default for brand consistency
+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

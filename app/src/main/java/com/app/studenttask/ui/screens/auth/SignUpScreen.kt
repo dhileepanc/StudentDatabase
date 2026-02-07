@@ -85,13 +85,13 @@ fun SignUpScreenContent(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.8f), // Reduced weight to give more space to form
+                .weight(0.8f),
             contentAlignment = Alignment.BottomCenter
         ) {
              Image(
                 painter = painterResource(id = R.drawable.signup_logo),
                 contentDescription = "SignUp Logo",
-                contentScale = ContentScale.Crop, // Changed to Crop for better consistency
+                contentScale = ContentScale.Crop,
                 alignment = Alignment.TopCenter,
                 modifier = Modifier
                     .fillMaxSize()
@@ -102,7 +102,7 @@ fun SignUpScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .offset(y = (-30).dp) // Reduced negative offset
+                .offset(y = (-30).dp)
                 .padding(horizontal = 12.dp)
                 .shadow(elevation = 10.dp, shape = RoundedCornerShape(5.dp))
                 .clip(RoundedCornerShape(5.dp))

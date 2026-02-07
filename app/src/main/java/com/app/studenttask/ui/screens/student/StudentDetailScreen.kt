@@ -95,7 +95,7 @@ fun StudentDetailContent(
                         .padding(top = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Profile Image
+
                     if (student.photoUri.isNotEmpty()) {
                         Image(
                             painter = rememberAsyncImagePainter(
@@ -149,7 +149,7 @@ fun StudentDetailContent(
                 }
             }
 
-            // -- Stats Cards --
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,7 +165,7 @@ fun StudentDetailContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // -- White Container for Details --
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -175,7 +175,7 @@ fun StudentDetailContent(
                     )
                     .padding(16.dp)
             ) {
-                // Parents Details
+
                 DetailSectionCard(title = "Parents Details") {
                     DetailRow("Father's name", student.fatherName)
                     DetailRow("Mother's name", student.motherName)
@@ -185,7 +185,6 @@ fun StudentDetailContent(
                 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Residential Details
                 DetailSectionCard(title = "Residential Details") {
                     DetailRow("Address 1", student.address1)
                     DetailRow("Address 2", student.address2.ifEmpty { "-" })
@@ -196,7 +195,6 @@ fun StudentDetailContent(
                 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Location
                 Text(
                     text = "Location",
                     style = MaterialTheme.typography.titleMedium,
@@ -232,8 +230,7 @@ fun StudentDetailContent(
                             title = student.name
                         )
                     }
-                     
-                    // Expand Icon overlay
+
                     Box(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -294,7 +291,7 @@ fun DetailSectionCard(title: String, content: @Composable ColumnScope.() -> Unit
                 content = content
             )
         }
-        // Title Overlay
+
         Text(
             text = title,
             style = MaterialTheme.typography.bodyMedium,

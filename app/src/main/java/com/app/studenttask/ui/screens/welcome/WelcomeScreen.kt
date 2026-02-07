@@ -33,7 +33,7 @@ fun WelcomeScreen(
             .navigationBarsPadding()
     ) {
 
-        // Top Image Section
+        // Top Section
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -57,7 +57,6 @@ fun WelcomeScreen(
             horizontalAlignment = Alignment.Start
         ) {
 
-            // Move text slightly up
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -92,7 +91,7 @@ fun WelcomeScreen(
                 )
             }
 
-            // 👇 Push signup text to bottom
+
             Spacer(modifier = Modifier.weight(1f))
 
             Row(

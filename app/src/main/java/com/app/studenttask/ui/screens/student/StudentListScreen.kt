@@ -106,7 +106,7 @@ fun StudentItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Avatar
+
                 if (student.photoUri.isNotEmpty()) {
                     Image(
                         painter = rememberAsyncImagePainter(
@@ -143,7 +143,7 @@ fun StudentItem(
                 
                 Spacer(modifier = Modifier.width(16.dp))
                 
-                // Info
+
                 Column {
                     Text(
                         text = student.name, 
@@ -160,7 +160,7 @@ fun StudentItem(
                 }
             }
             
-            // Right Arrow
+
             Box(
                 modifier = Modifier
                     .size(40.dp)

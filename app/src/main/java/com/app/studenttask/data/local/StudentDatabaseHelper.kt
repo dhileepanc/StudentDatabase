@@ -160,14 +160,12 @@ class StudentDatabaseHelper @Inject constructor(
             do {
                 val id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_STUDENT_ID))
                 val name = cursor.getString(cursor.getColumnIndexOrThrow(COL_STUDENT_NAME))
-                // Retrieve other fields (Adding basic retrieval for List View, detailed retrieval can be added if we have a Details Screen)
-                // For now, listing mainly Name and Class for the list view
+
                 val className = cursor.getString(cursor.getColumnIndexOrThrow(COL_STUDENT_CLASS))
                 val schoolName = cursor.getString(cursor.getColumnIndexOrThrow(COL_STUDENT_SCHOOL))
                 val photoUri = cursor.getString(cursor.getColumnIndexOrThrow(COL_STUDENT_PHOTO))
                 
-                // Using empty strings/defaults for fields not strictly needed in the summary list to keep logic simple for now
-                // Ideally, you'd map everything
+
                 
                  val student = Student(
                     id = id,

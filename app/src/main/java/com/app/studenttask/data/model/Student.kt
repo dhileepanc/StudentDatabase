@@ -3,7 +3,7 @@ package com.app.studenttask.data.model
 data class Student(
     val id: Int = -1,
     val name: String,
-    val className: String, // "Class" in UI
+    val className: String,
     val section: String,
     val schoolName: String,
     val gender: String,

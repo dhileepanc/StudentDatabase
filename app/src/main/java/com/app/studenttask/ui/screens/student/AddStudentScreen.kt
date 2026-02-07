@@ -87,7 +87,7 @@ fun AddStudentScreen(
     val longitude by viewModel.longitude.collectAsState()
     val photoUri by viewModel.photoUri.collectAsState()
 
-    // Update VM state when returning from map
+
     LaunchedEffect(selectedLat, selectedLng) {
         if (selectedLat != null && selectedLng != null) {
             viewModel.latitude.value = selectedLat
@@ -201,7 +201,7 @@ fun AddStudentScreenContent(
     var locationAddress by remember { mutableStateOf("") }
     val context = LocalContext.current
     
-    // Reverse Geocoding Effect
+
     LaunchedEffect(latitude, longitude) {
         if (latitude != null && longitude != null) {
             locationAddress = LocationUtils.getAddressFromLocation(context, latitude!!, longitude!!)
@@ -241,13 +241,11 @@ fun AddStudentScreenContent(
         }
     }
 
-    // Dropdown States
     var classExpanded by remember { mutableStateOf(false) }
     var sectionExpanded by remember { mutableStateOf(false) }
     val classes = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12")
     val sections = listOf("A", "B", "C", "D")
 
-    // Date Picker State
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
@@ -338,7 +336,7 @@ fun AddStudentScreenContent(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Photo Capture Section
+
             Box(
                 modifier = Modifier
                     .size(120.dp)
@@ -377,7 +375,7 @@ fun AddStudentScreenContent(
                     )
                 }
                 
-                // Camera Icon Overlay
+
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -392,11 +390,11 @@ fun AddStudentScreenContent(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Fields
+
             CustomOutlinedTextField(value = name, onValueChange = onNameChange, label = "Name *")
             
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                // Class Dropdown
+
                 ExposedDropdownMenuBox(
                     expanded = classExpanded,
                     onExpandedChange = { classExpanded = it },
@@ -433,7 +431,7 @@ fun AddStudentScreenContent(
                     }
                 }
 
-                // Section Dropdown
+
                 ExposedDropdownMenuBox(
                     expanded = sectionExpanded,
                     onExpandedChange = { sectionExpanded = it },
@@ -473,7 +471,7 @@ fun AddStudentScreenContent(
             
             CustomOutlinedTextField(value = schoolName, onValueChange = onSchoolNameChange, label = "School name")
 
-            // Gender
+
             Row(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -538,7 +536,7 @@ fun AddStudentScreenContent(
 
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Location Section
+
             Text("Select Location *", color = MaterialTheme.colorScheme.primary, modifier = Modifier.align(Alignment.Start))
             Box(
                 modifier = Modifier
@@ -578,7 +576,7 @@ fun AddStudentScreenContent(
                     )
                  }
                 
-                // Overlay Button and Address
+
                 Box(
                     modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth().background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)).padding(8.dp)
                 ) {

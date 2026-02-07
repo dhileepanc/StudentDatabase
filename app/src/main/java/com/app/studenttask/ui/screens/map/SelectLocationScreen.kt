@@ -33,13 +33,13 @@ fun SelectLocationScreen(
     onLocationSelected: (Double, Double) -> Unit,
     onBack: () -> Unit
 ) {
-    // Default location (e.g., Chennai)
+
     val defaultLocation = LatLng(13.0827, 80.2707)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(defaultLocation, 15f)
     }
 
-    // Track center of screen as selected location
+
     var centerLocation by remember { mutableStateOf(defaultLocation) }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -170,9 +170,9 @@ fun SelectLocationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Directions FAB (Blue)
+
                 SmallFloatingActionButton(
-                    onClick = { /* Directions */ },
+                    onClick = {  },
                     containerColor = Color(0xFF4285F4), // Google Blue
                     contentColor = Color.White,
                     shape = androidx.compose.foundation.shape.CircleShape,

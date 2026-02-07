@@ -49,7 +49,7 @@ fun AppNavigation() {
         }
         composable(Screen.SignUp.route) {
             SignUpScreen(
-                onSignUpSuccess = { navController.popBackStack() }, // Go back to login
+                onSignUpSuccess = { navController.popBackStack() },
                 onNavigateToLogin = { navController.popBackStack() }
             )
         }
@@ -69,11 +69,10 @@ fun AppNavigation() {
             val currentBackStackEntry = navController.currentBackStackEntry
             val savedStateHandle = currentBackStackEntry?.savedStateHandle
 
-            // Observe results from SelectLocationScreen
             val lat = savedStateHandle?.get<Double>("lat")
             val lng = savedStateHandle?.get<Double>("lng")
 
-            // Pass initial values if needed
+
 
             AddStudentScreen(
                 onBack = { navController.popBackStack() },

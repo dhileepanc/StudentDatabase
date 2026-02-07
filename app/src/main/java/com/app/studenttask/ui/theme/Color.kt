@@ -12,9 +12,9 @@ val Pink40 = Color(0xFF7D5260)
 
 // App Custom Colors
 // Light Theme Colors
-val TealPrimary = Color(0xFF07575B) // Main Teal
-val TealDark = Color(0xFF003B46)    // Darker variant for contrast
-val TealBackground = Color(0xFF07575B) // Keeping for compatibility
+val TealPrimary = Color(0xFF07575B)
+val TealDark = Color(0xFF003B46)
+val TealBackground = Color(0xFF07575B)
 val LightBlueOverlay = Color(0xFFD8EAEB)
 val ButtonColor = Color(0xFF014D4E)
 val TextDark = Color(0xFF2C3E50)
